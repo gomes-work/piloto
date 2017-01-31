@@ -1,0 +1,31 @@
+{
+  "name": "soap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run schema & npm run rest",
+    "schema": "node schema.js",
+    "rest": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.1",
+    "apicache": "^0.7.4",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "promisify-node": "^0.4.0",
+    "redis": "^2.6.3",
+    "request-promise": "^4.1.1",
+    "seneca": "^3.2.2",
+    "seneca-amqp-transport": "^2.1.0",
+    "seneca-nats-transport": "^2.0.2",
+    "soap": "^0.18.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.12.2",
+    "eslint-config-google": "^0.7.1"
+  }
+}

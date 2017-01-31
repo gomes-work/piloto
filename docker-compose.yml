@@ -1,0 +1,74 @@
+version: '2'
+services: 
+    nginx:
+        build: ./nginx
+        image: vivo/mvapp/nginx:1.0
+        links:
+            - rest1:rest1
+            - rest2:rest2
+        ports:
+            - "80:80"
+
+    rest1:
+        build: 
+            context: ./soap
+            args:
+                PROXY: ${PROXY}
+        image: vivo/mvapp/rest:1.0
+        extra_hosts: 
+            - alsb3-soa:10.129.165.52
+        links:
+            - redis
+            - queue
+        depends_on: 
+            - queue
+        ports:
+            - "8080"
+        environment: 
+            AMQP_URL: 'ampq://queue'
+            CONTAINER_ID: 'rest1'
+
+    rest2:
+        build: 
+            context: ./soap
+            args:
+                PROXY: ${PROXY}
+        image: vivo/mvapp/rest:1.0
+        extra_hosts: 
+            - alsb3-soa:10.129.165.52
+        links:
+            - redis
+            - queue
+        depends_on: 
+            - queue
+        ports:
+            - "8080"
+        environment: 
+            AMQP_URL: 'ampq://queue'
+            CONTAINER_ID: 'rest2'
+
+    api:
+        build: 
+            context: ./api
+            args:
+                PROXY: ${PROXY}
+        image: vivo/mvapp/api:1.0
+        links:
+            - queue
+        depends_on: 
+            - queue
+        environment: 
+            AMQP_URL: 'ampq://queue'
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
+    
+    queue:
+        image: rabbitmq:3-management
+        ports:
+            - "15672:15672"
+        environment: 
+            - RABBITMQ_HIPE_COMPILE=1
+        hostname: "queue"

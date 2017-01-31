@@ -1,0 +1,9 @@
+{
+	"name": "api",
+	"script": "api.js",
+	"instances": 0,
+	"exec_mode": "cluster",
+	"env": {
+		"AMQP_URL": "ampq://127.0.0.1"
+	}
+}
