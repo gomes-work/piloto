@@ -6,6 +6,8 @@ const ip = (os.networkInterfaces()['eth0'] || [])
 	.filter(addr => addr.match(/^\d+\.\d+/))
 	.join(',')
 
+const logger = require('../soap/lib/logger').logger;
+
 require('seneca')()
 	/*.use('seneca-amqp-transport', { amqp: { 
 		socketOptions: { noDelay: true },
@@ -15,9 +17,18 @@ require('seneca')()
 		nats: {servers: ['nats://queue:4222']}
 	})
 	.add('cmd:salute', (message, done) => {
+		require('../soap/lib/logger').updateContext(
+			{
+				correlationId: message.correlationId,
+				endpoint: 'api'
+			}
+		)
+		logger.info("received message from rest")
+		
 		done(null, {
 			id: Math.random(),
 			message: `Hello ${message.name}!`,
+			correlationId: message.correlationId,
 			api: ip,
 			now: Date.now()
 		});

@@ -15,9 +15,13 @@ const client = require('seneca')()
 
 
 const act = require('bluebird').promisify(client.act, {context: client});
+const logger = require('../lib/logger').logger;
 
 function greetings(name) {
-	return act({cmd: 'salute'}, {name});
+	logger.info(`sending greeting ${name}`);
+	const correlationId = require('../lib/logger').getContext().correlationId;
+
+	return act({cmd: 'salute'}, {name, correlationId});
 }
 
 module.exports = function () {

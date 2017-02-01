@@ -8,12 +8,24 @@ const cache = apicache
 								.options({ redisClient: redis.createClient(6379, 'redis') })
 								.middleware;
 
+const logger = require('./lib/logger').logger;
+var uuid = require('uuid');
+
+logger.info("Hello World from Node.js!");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
 	res.setHeader('ContainerId', process.env.CONTAINER_ID || 'none');
 	res.setHeader('Content-Type','application/json');
+	require('./lib/logger').updateContext( {
+		correlationId: uuid(),
+		endpoint: "rest"
+	});
+
+	logger.info("New request");
+
 	return next();
 });
 
