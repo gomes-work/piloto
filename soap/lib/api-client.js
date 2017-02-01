@@ -1,6 +1,8 @@
 const client = require('seneca')()
-	.use('nats-transport')
-  .client({type:'nats'});
+	.use('nats-transport', {
+		nats: {servers: ['nats://queue:4222']}
+	})
+    .client({type:'nats'});
 	/*.use('seneca-amqp-transport', { amqp: {
 		socketOptions: { noDelay: true },
 		queues: {options: {durable: false }},

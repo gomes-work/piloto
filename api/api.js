@@ -11,7 +11,9 @@ require('seneca')()
 		socketOptions: { noDelay: true },
 		queues: {options: { durable: false }}
 	}})*/
-	.use('nats-transport')
+	.use('nats-transport', {
+		nats: {servers: ['nats://queue:4222']}
+	})
 	.add('cmd:salute', (message, done) => {
 		done(null, {
 			id: Math.random(),
