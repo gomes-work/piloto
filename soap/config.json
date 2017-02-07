@@ -1,0 +1,10 @@
+{
+	"logger": {
+		"level": "info",
+		"subdomain": "vivo",
+		"options": {
+			"timestamp": true,
+			"colorize": true
+		}
+	}
+}
