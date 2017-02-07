@@ -6,7 +6,7 @@ const ip = (os.networkInterfaces()['eth0'] || [])
 	.filter(addr => addr.match(/^\d+\.\d+/))
 	.join(',')
 
-const logger = require('../soap/lib/logger').logger;
+const logger = require('./lib/logger').logger;
 
 require('seneca')()
 	/*.use('seneca-amqp-transport', { amqp: { 

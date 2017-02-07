@@ -4,7 +4,7 @@ const app = express();
 
 const config = require('./config.json');
 
-//const cache = require('./lib/cache');
+const cache = require('./lib/cache');
 
 const logger = require('./lib/logger')({endpoint: 'soap'}, config.logger);
 const uuid = require('uuid');
@@ -23,8 +23,8 @@ app.use((req, res, next) => {
 	return next();
 });
 
-//require('./lib/routes/routes_soap.js')(app, cache);
-//require('./lib/routes/routes_api.js')(app);
+require('./lib/routes/routes_soap.js')(app, cache);
+require('./lib/routes/routes_api.js')(app);
 require('./lib/routes/routes_oam.js')(app);
 
 app.get('/ping', function(req, res) {

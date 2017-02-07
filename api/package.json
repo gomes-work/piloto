@@ -13,6 +13,7 @@
   "dependencies": {
     "seneca": "^3.2.2",
     "seneca-amqp-transport": "^2.1.0",
-    "seneca-nats-transport": "^2.0.2"
+    "seneca-nats-transport": "^2.0.2",
+    "winston": "^2.3.1"
   }
 }
