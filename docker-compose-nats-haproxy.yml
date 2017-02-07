@@ -1,0 +1,54 @@
+version: '2'
+services: 
+    haproxy:
+        image: dockercloud/haproxy
+        links:
+            - rest
+        volumes:
+           - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "8080:80"
+
+    rest:
+        build: 
+            context: ./soap
+            args:
+                PROXY: ${PROXY}      
+        image: vivo/mvapp/rest:latest
+        extra_hosts: 
+            - alsb3-soa:10.129.165.52
+        links:
+            - redis
+            - queue
+        depends_on: 
+            - queue
+        ports:
+            - "8080"
+        environment: 
+            QUEUE_URL: 'nats://queue:4222'
+            CONTAINER_ID: 'rest1'
+
+    api:
+        build: 
+            context: ./api
+            args:
+                PROXY: ${PROXY}
+        image: vivo/mvapp/api:1.0
+        links:
+            - queue
+        depends_on: 
+            - queue
+        environment: 
+            QUEUE_URL: 'nats://queue:4222'
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
+    
+    queue:
+        image: nats
+        hostname: "queue"
+        ports:
+            - "4222:4222"
+            - "8222:8222"
