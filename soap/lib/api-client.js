@@ -1,17 +1,32 @@
-const client = require('seneca')()
-	.use('nats-transport', {
-		nats: {servers: ['nats://queue:4222']}
-	})
-    .client({type:'nats'});
-	/*.use('seneca-amqp-transport', { amqp: {
+function getConfig(seneca) {
+	if (process.env.QUEUE_URL.startsWith('ampq://')) return configure_rabbitmq(seneca);
+	else return configure_nats(seneca);
+}
+
+function configure_nats(seneca) {
+	seneca.use('nats-transport', {
+		nats: {servers: [process.env.QUEUE_URL]}
+	})	
+	.client({type:'nats'});
+
+	return seneca;
+}
+
+function configure_rabbitmq(seneca) {
+	seneca.use('seneca-amqp-transport', { amqp: { 
 		socketOptions: { noDelay: true },
-		queues: {options: {durable: false }},
+		queues: {options: { durable: false }}
 	}})
 	.client({
 		type: 'amqp',
 		pin: 'cmd:salute',
-		url: process.env.AMQP_URL
-	});*/
+		url: process.env.QUEUE_URL
+	});
+
+	return seneca;
+}
+
+const client = getConfig(require('seneca')());
 
 
 const act = require('bluebird').promisify(client.act, {context: client});

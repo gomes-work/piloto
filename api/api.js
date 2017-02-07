@@ -8,15 +8,34 @@ const ip = (os.networkInterfaces()['eth0'] || [])
 
 // const logger = require('./lib/logger').logger;
 
-require('seneca')()
-	/*.use('seneca-amqp-transport', { amqp: { 
+function getConfig(seneca, callback) {
+	if (process.env.QUEUE_URL.startsWith('ampq://')) configure_rabbitmq(seneca, callback);
+	else configure_nats(seneca, callback);
+}
+
+function configure_nats(seneca, callback) {
+	seneca.use('nats-transport', {
+		nats: {servers: ['nats://queue:4222']}
+	})	
+	callback(seneca)
+	seneca.listen({type:'nats'});
+}
+
+function configure_rabbitmq(seneca, callback) {
+	seneca.use('seneca-amqp-transport', { amqp: { 
 		socketOptions: { noDelay: true },
 		queues: {options: { durable: false }}
-	}})*/
-	.use('nats-transport', {
-		nats: {servers: ['nats://queue:4222']}
-	})
-	.add('cmd:salute', (message, done) => {
+	}})
+	callback(seneca)
+	.listen({
+		type: 'amqp',
+		pin: 'cmd:salute',
+		url: process.env.QUEUE_URL
+	});
+}
+
+getConfig(require('seneca')(), function(seneca) {
+	seneca.add('cmd:salute', (message, done) => {
 		// require('../soap/lib/logger').updateContext(
 		// 	{
 		// 		correlationId: message.correlationId,
@@ -33,9 +52,7 @@ require('seneca')()
 			now: Date.now()
 		});
 	})
-	.listen({type:'nats'});
-	/*.listen({
-		type: 'amqp',
-		pin: 'cmd:salute',
-		url: process.env.AMQP_URL
-	});*/
+	return seneca;
+});
+
+

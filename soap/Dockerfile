@@ -13,4 +13,4 @@ ARG PROXY
 COPY . /usr/src/app/
 
 EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD [ "./wait-for-it.sh", "queue:$QUEUE_PORT","--timeout=60", "--", "npm", "start" ]
