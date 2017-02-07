@@ -76,8 +76,8 @@ function cryptAndAuthenticate(authObject) {
 module.exports = {
 	crypt,
 	authenticateByToken,
-	loginByEmail: ({login, password}) => cryptAndAuthenticate({login, password, type: 'email'}),
-	loginByCPF: ({login, password}) => cryptAndAuthenticate({login, password, type: 'cpf'}),
-	loginByMSISDN: ({login, password}) => cryptAndAuthenticate({login, password, type: 'telefone'}),
-	loginByFacebook: ({login, password}) => cryptAndAuthenticate({login, password, type: 'facebook'})
+	loginByEmail: ({login, password}, logger) => cryptAndAuthenticate({login, password, type: 'email'}),
+	loginByCPF: ({login, password}, logger) => cryptAndAuthenticate({login, password, type: 'cpf'}),
+	loginByMSISDN: ({login, password}, logger) => cryptAndAuthenticate({login, password, type: 'telefone'}),
+	loginByFacebook: ({login, password}, logger) => cryptAndAuthenticate({login, password, type: 'facebook'})
 };

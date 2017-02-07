@@ -2,9 +2,11 @@
 
 const oam = require('../oam');
 
-function wrapFunction(funcaoOAM) {
+function wrapFunction(logger, funcaoOAM) {
 	return function(req, res) {
-		funcaoOAM({login: req.body.login, password: req.body.password})
+		const correlationId = req.params.correlationId;
+
+		funcaoOAM({login: req.body.login, password: req.body.password}, logger)
 			.then((token) => res.json(token))
 			.catch((err) => {
 				res.status(500);
