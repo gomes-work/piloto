@@ -2,7 +2,7 @@ version: '2'
 services: 
     nginx:
         build: ./nginx
-        image: vivo/mvapp/nginx:1.0
+        image: vivo/mvapp/nginx:latest
         links:
             - rest1:rest1
             - rest2:rest2
@@ -14,7 +14,7 @@ services:
             context: ./soap
             args:
                 PROXY: ${PROXY}      
-        image: vivo/mvapp/rest:1.0
+        image: vivo/mvapp/rest:latest
         extra_hosts: 
             - alsb3-soa:10.129.165.52
         links:
@@ -33,7 +33,7 @@ services:
             context: ./soap
             args:
                 PROXY: ${PROXY}
-        image: vivo/mvapp/rest:1.0
+        image: vivo/mvapp/rest:latest
         extra_hosts: 
             - alsb3-soa:10.129.165.52
         links:
