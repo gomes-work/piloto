@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 ARG PROXY
- RUN npm config set proxy $PROXY && \
+RUN npm config set proxy $PROXY && \
  		npm config set https-proxy $PROXY && \
  		npm config set strict-ssl false && \
  		npm install
@@ -13,4 +13,4 @@ ARG PROXY
 COPY . /usr/src/app/
 
 EXPOSE 8080
-CMD [ "./wait-for-it.sh", "queue:$QUEUE_PORT","--timeout=60", "--", "npm", "start" ]
+CMD [ "sh", "-c", "./wait-for-it.sh ${WAIT_FOR} --timeout=60 -- npm start" ]

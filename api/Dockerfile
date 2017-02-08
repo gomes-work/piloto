@@ -13,4 +13,4 @@ RUN npm config set proxy $PROXY && \
 COPY . /usr/src/app/
 
 EXPOSE 8080
-CMD [ "./wait-for-it.sh", "queue:$QUEUE_PORT", "--timeout=60", "--", "npm", "start" ]
+CMD [ "sh", "-c", "./wait-for-it.sh ${WAIT_FOR} --timeout=60 -- npm start" ]

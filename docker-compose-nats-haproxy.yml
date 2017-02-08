@@ -24,7 +24,8 @@ services:
             - queue
         ports:
             - "8080"
-        environment: 
+        environment:
+            WAIT_FOR: 'queue:4222' 
             QUEUE_URL: 'nats://queue:4222'
             CONTAINER_ID: 'rest1'
 
@@ -38,7 +39,8 @@ services:
             - queue
         depends_on: 
             - queue
-        environment: 
+        environment:
+            WAIT_FOR: 'queue:4222'  
             QUEUE_URL: 'nats://queue:4222'
 
     redis:
