@@ -1,0 +1,84 @@
+version: '2'
+services: 
+    haproxy:
+        image: dockercloud/haproxy
+        links:
+            - rest
+        volumes:
+           - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "8080:80"
+
+    rest:
+        build: 
+            context: ./soap
+            args:
+                PROXY: ${PROXY}  
+        image: vivo/mvapp/rest:latest
+        extra_hosts: 
+            - alsb3-soa:10.129.165.52
+        links:
+            - redis
+            - queue
+        depends_on: 
+            - queue
+        ports:
+            - "8080"
+        environment: 
+            WAIT_FOR: 'queue:5672'
+            QUEUE_URL: 'ampq://queue'
+            CONTAINER_ID: 'rest1'
+
+    api:
+        build: 
+            context: ./api
+            args:
+                PROXY: ${PROXY}
+        image: vivo/mvapp/api:1.0
+        links:
+            - queue
+        depends_on: 
+            - queue
+        environment:
+            WAIT_FOR: 'queue:5672' 
+            QUEUE_URL: 'ampq://queue'
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
+
+    queue:
+        image: harbur/rabbitmq-cluster
+        hostname: queue
+        environment:
+            - ERLANG_COOKIE=abcdefg
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+    
+    queue2:
+        image: harbur/rabbitmq-cluster
+        hostname: queue2
+        links:
+            - queue
+        environment:
+            - ERLANG_COOKIE=abcdefg
+            - CLUSTER_WITH=queue
+            - ENABLE_RAM=true
+            - RAM_NODE=true
+        ports:
+            - "5673:5672"
+            - "15673:15672"
+
+    queue3:
+        image: harbur/rabbitmq-cluster
+        hostname: queue3
+        links:
+            - queue
+            - queue2
+        environment:
+            - ERLANG_COOKIE=abcdefg
+            - CLUSTER_WITH=queue
+        ports:
+            - "5674:5672"        
