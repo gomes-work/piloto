@@ -16,7 +16,6 @@ services:
                 PROXY: ${PROXY}
         image: simples-rest:latest
         links:
-            - redis
             - queue
         depends_on: 
             - queue
@@ -33,7 +32,6 @@ services:
                 PROXY: ${PROXY}
         image: simple-rest:latest
         links:
-            - redis
             - queue
         depends_on: 
             - queue
@@ -42,7 +40,7 @@ services:
         environment: 
             AMQP_URL: 'ampq://queue'
             CONTAINER_ID: 'rest2'
-                
+
     queue:
         image: rabbitmq:3-management
         ports:
