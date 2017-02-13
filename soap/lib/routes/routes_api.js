@@ -13,4 +13,15 @@ module.exports = function(app) {
 				res.send(err);
 			});
 	});
+
+	app.get('/time/:time', function(req, res) {
+		// logger.info(`gretting ${req.params.name}`);
+		apiClient.greetings('joao')
+			.then(greet => setTimeout((function() {res.json(greet)}), req.params.time))
+			.catch(err => {
+				res.status(500);
+				res.send(err);
+			});
+	});
+
 };
